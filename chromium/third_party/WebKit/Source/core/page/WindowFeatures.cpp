@@ -111,9 +111,25 @@ WindowFeatures::WindowFeatures(const String& features)
 
         ASSERT_WITH_SECURITY_IMPLICATION(i <= length);
 
-        // skip to first separator
-        while (i < length && !isWindowFeaturesSeparator(buffer[i]))
-            i++;
+        if (i < length && buffer[i] == '{') {
+            // json value: go to the matching '}'
+            int unmatchedBraceCount = 0;
+            while (i < length) {
+                if (buffer[i] == '{')
+                    unmatchedBraceCount++;
+                else if (buffer[i] == '}')
+                    unmatchedBraceCount--;
+
+                i++;
+                if (unmatchedBraceCount <= 0)
+                    break;
+            }
+        }
+        else {
+            // classic case: skip to first separator
+            while (i < length && !isWindowFeaturesSeparator(buffer[i]))
+                i++;
+        }
         valueEnd = i;
 
         ASSERT_WITH_SECURITY_IMPLICATION(i <= length);
@@ -161,6 +177,9 @@ void WindowFeatures::setWindowFeature(const String& keyString, const String& val
         fullscreen = value;
     else if (keyString == "scrollbars")
         scrollbarsVisible = value;
+    else if (keyString == "attributes") {
+        additionalFeatures.append(keyString+"="+valueString);
+    }
     else if (value == 1)
         additionalFeatures.append(keyString);
 }
@@ -188,7 +207,7 @@ WindowFeatures::WindowFeatures(const String& dialogFeaturesString, const IntRect
     // - unadorned: trusted && boolFeature(features, "unadorned");
 
     width = intFeature(features, "dialogwidth", 100, screenAvailableRect.width(), 620); // default here came from frame size of dialog in MacIE
-    height = intFeature(features, "dialogheight", 100, screenAvailableRect.height(), 450); // default here came from frame size of dialog in MacIE
+    height = intFeature(features, "dialogheight", 5, screenAvailableRect.height(), 450); // default here came from frame size of dialog in MacIE
 
     x = intFeature(features, "dialogleft", screenAvailableRect.x(), screenAvailableRect.maxX() - width, -1);
     xSet = x > 0;
