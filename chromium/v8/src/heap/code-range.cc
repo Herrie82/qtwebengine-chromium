@@ -64,7 +64,7 @@ size_t CodeRange::GetWritableReservedAreaSize() {
   return kReservedCodeRangePages * MemoryAllocator::GetCommitPageSize();
 }
 
-#define TRACE(...) \
+#define TRACE_CR(...) \
   if (v8_flags.trace_code_range_allocation) PrintF(__VA_ARGS__)
 
 bool CodeRange::InitReservation(v8::PageAllocator* page_allocator,
@@ -123,7 +123,7 @@ bool CodeRange::InitReservation(v8::PageAllocator* page_allocator,
       kMaxPCRelativeCodeRangeInMB > 1024 ? kMaxPCRelativeCodeRangeInMB : 4096;
   auto preferred_region = GetPreferredRegion(kRadiusInMB, kPageSize);
 
-  TRACE("=== Preferred region: [%p, %p)\n",
+  TRACE_CR("=== Preferred region: [%p, %p)\n",
         reinterpret_cast<void*>(preferred_region.begin()),
         reinterpret_cast<void*>(preferred_region.end()));
 
@@ -148,10 +148,10 @@ bool CodeRange::InitReservation(v8::PageAllocator* page_allocator,
     Address step =
         RoundDown(preferred_region.size() / kAllocationTries, kPageSize);
     for (int i = 0; i < kAllocationTries; i++) {
-      TRACE("=== Attempt #%d, hint=%p\n", i,
+      TRACE_CR("=== Attempt #%d, hint=%p\n", i,
             reinterpret_cast<void*>(params.requested_start_hint));
       if (candidate_cage.InitReservation(params)) {
-        TRACE("=== Attempt #%d (%p): [%p, %p)\n", i,
+        TRACE_CR("=== Attempt #%d (%p): [%p, %p)\n", i,
               reinterpret_cast<void*>(params.requested_start_hint),
               reinterpret_cast<void*>(candidate_cage.region().begin()),
               reinterpret_cast<void*>(candidate_cage.region().end()));
@@ -176,7 +176,7 @@ bool CodeRange::InitReservation(v8::PageAllocator* page_allocator,
       params.requested_start_hint = kNullAddress;
       if (!VirtualMemoryCage::InitReservation(params)) return false;
     }
-    TRACE("=== Fallback attempt, hint=%p: [%p, %p)\n",
+    TRACE_CR("=== Fallback attempt, hint=%p: [%p, %p)\n",
           reinterpret_cast<void*>(params.requested_start_hint),
           reinterpret_cast<void*>(region().begin()),
           reinterpret_cast<void*>(region().end()));
@@ -475,6 +475,8 @@ uint8_t* CodeRange::RemapEmbeddedBuiltins(Isolate* isolate,
                                  std::memory_order_release);
   return embedded_blob_code_copy;
 }
+
+#undef TRACE_CR
 
 }  // namespace internal
 }  // namespace v8
