@@ -21,7 +21,9 @@
 #include "build/build_config.h"
 #include "components/autofill/core/browser/autofill_trigger_source.h"
 #include "components/autofill/core/browser/country_type.h"
+#if !BUILDFLAG(IS_QTWEBENGINE)
 #include "components/autofill/core/browser/data_model/autofill_ai/entity_instance.h"
+#endif
 #include "components/autofill/core/browser/filling/filling_product.h"
 #include "components/autofill/core/browser/integrators/fast_checkout/fast_checkout_client.h"
 #include "components/autofill/core/browser/integrators/identity_credential/identity_credential_delegate.h"
@@ -38,10 +40,14 @@
 #include "components/autofill/core/common/plus_address_survey_type.h"
 #include "components/autofill/core/common/unique_ids.h"
 #include "components/device_reauth/device_authenticator.h"
+#if !BUILDFLAG(IS_QTWEBENGINE)
+#include "components/plus_addresses/plus_address_service.h"
 #include "components/profile_metrics/browser_profile_type.h"
 #include "components/security_state/core/security_state.h"
 #include "components/translate/core/browser/language_state.h"
+#endif
 #include "services/metrics/public/cpp/ukm_source_id.h"
+#include "services/network/public/cpp/shared_url_loader_factory.h"
 #include "ui/base/window_open_disposition.h"
 #include "ui/gfx/geometry/rect_f.h"
 #include "ui/gfx/image/image.h"
@@ -277,6 +283,7 @@ class AutofillClient {
   // Returns the AutofillDriverFactory.
   virtual AutofillDriverFactory& GetAutofillDriverFactory() = 0;
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Returns the VotesUploader.
   virtual VotesUploader& GetVotesUploader() = 0;
 
@@ -299,6 +306,7 @@ class AutofillClient {
   // one.
   virtual EntityDataManager* GetEntityDataManager() = 0;
   const EntityDataManager* GetEntityDataManager() const;
+#endif
 
   // Gets the AutofillOptimizationGuide instance associated with the client.
   // This function can return nullptr if we are on an unsupported platform, or
@@ -315,9 +323,11 @@ class AutofillClient {
   virtual FieldClassificationModelHandler*
   GetPasswordManagerFieldClassificationModelHandler();
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Handles routing single-field form filling requests, such as for
   // Autocomplete and merchant promo codes.
   virtual SingleFieldFillRouter& GetSingleFieldFillRouter() = 0;
+#endif
 
   // Gets the AutocompleteHistoryManager instance associated with the client.
   virtual AutocompleteHistoryManager* GetAutocompleteHistoryManager() = 0;
@@ -331,6 +341,7 @@ class AutofillClient {
       std::optional<optimization_guide::proto::AnnotatedPageContent>)>;
   virtual void GetAiPageContent(GetAiPageContentCallback callback);
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Returns the `AutofillAiManager` instance for the tab of this client.
   // Returns `nullptr` if, at the time of the AutofillClient's construction, the
   // Autofill AI feature is unsupported.
@@ -394,11 +405,13 @@ class AutofillClient {
       std::u16string affiliated_domain,
       std::u16string affiliated_plus_address,
       base::OnceClosure on_accepted);
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Gets the preferences associated with the client.
   virtual PrefService* GetPrefs() = 0;
   virtual const PrefService* GetPrefs() const = 0;
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Gets the sync service associated with the client.
   virtual syncer::SyncService* GetSyncService() = 0;
   const syncer::SyncService* GetSyncService() const;
@@ -450,11 +463,13 @@ class AutofillClient {
   // Returns the translate driver, if available, which is used to observe the
   // page language for language-dependent heuristics.
   virtual translate::TranslateDriver* GetTranslateDriver() = 0;
+#endif
 
   // Retrieves the country code of the user from Chrome variation service.
   // If the variation service is not available, return an empty string.
   virtual GeoIpCountryCode GetVariationConfigCountryCode() const;
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Returns the profile type of the session.
   virtual profile_metrics::BrowserProfileType GetProfileType() const;
 
@@ -476,6 +491,7 @@ class AutofillClient {
       const AutofillProfile* original_profile,
       bool is_migration_to_account,
       AddressProfileSavePromptCallback callback) = 0;
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // A unique identifier for suggestions UI (i.e. the keyboard accessory on
   // mobile and the popup on Desktop). Calling `ShowAutofillSuggestions`
@@ -535,6 +551,7 @@ class AutofillClient {
   // Hides the Autofill suggestions UI if it is currently showing.
   virtual void HideAutofillSuggestions(SuggestionHidingReason reason) = 0;
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Maybe triggers a hats survey that measures the user's perception of
   // Autofill. When triggering happens, the survey dialog will be displayed with
   // a 5s delay. Note:  This survey should be triggered after form submissions.
@@ -547,6 +564,7 @@ class AutofillClient {
   virtual void TriggerUserPerceptionOfAutofillSurvey(
       FillingProduct filling_product,
       const std::map<std::string, std::string>& field_filling_stats_data);
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Triggers a survey to ask the user why they declined saving an address.
   virtual void TriggerDeclinedSaveAddressReasonSurvey();
@@ -568,12 +586,14 @@ class AutofillClient {
   // Returns whether password management is enabled as per the user preferences.
   virtual bool IsPasswordManagerEnabled() const = 0;
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Inform the client that the form has been filled.
   virtual void DidFillForm(AutofillTriggerSource trigger_source,
                            bool is_refill) = 0;
 
   // If the context is secure.
   virtual bool IsContextSecure() const = 0;
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Returns a LogManager instance (for chrome://autofill-internals). Note that
   // the return value may change over the lifetime of an AutofillClient from
@@ -584,6 +604,7 @@ class AutofillClient {
   // - May return null for platforms that don't support this.
   virtual LogManager* GetCurrentLogManager();
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   virtual autofill_metrics::FormInteractionsUkmLogger&
   GetFormInteractionsUkmLogger() = 0;
 
@@ -617,6 +638,7 @@ class AutofillClient {
   // platform is not supported.
   virtual std::unique_ptr<device_reauth::DeviceAuthenticator>
   GetDeviceAuthenticator();
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Attaches the IPH for `feature` to the `field`, on
   // platforms that it. If another IPH has been shown for the tab, the IPH is
