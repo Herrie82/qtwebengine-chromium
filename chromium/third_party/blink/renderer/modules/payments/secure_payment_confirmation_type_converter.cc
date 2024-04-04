@@ -23,11 +23,12 @@ TypeConverter<payments::mojom::blink::SecurePaymentConfirmationRequestPtr,
               blink::SecurePaymentConfirmationRequest*>::
     Convert(const blink::SecurePaymentConfirmationRequest* input) {
   auto output = payments::mojom::blink::SecurePaymentConfirmationRequest::New();
-  output->credential_ids =
-      mojo::ConvertTo<blink::Vector<blink::Vector<uint8_t>>>(
-          input->credentialIds());
-  output->challenge =
-      mojo::ConvertTo<blink::Vector<uint8_t>>(input->challenge());
+  auto in = input->credentialIds();
+  output->credential_ids.reserve(in.size());
+  for (const auto& obj : in) {
+    output->credential_ids.push_back(mojo::ConvertTo<blink::Vector<uint8_t>>(obj));
+  }
+  output->challenge = mojo::ConvertTo<blink::Vector<uint8_t>>(input->challenge());
 
   // If a timeout was not specified in JavaScript, then pass a null `timeout`
   // through mojo IPC, so the browser can set a default (e.g., 3 minutes).
@@ -52,9 +53,10 @@ TypeConverter<payments::mojom::blink::SecurePaymentConfirmationRequestPtr,
     output->payee_name = input->payeeName();
 
   if (input->hasExtensions()) {
-    output->extensions =
-        ConvertTo<blink::mojom::blink::AuthenticationExtensionsClientInputsPtr>(
-            *input->extensions());
+    output->extensions = mojo::TypeConverter<
+        blink::mojom::blink::AuthenticationExtensionsClientInputsPtr,
+        blink::AuthenticationExtensionsClientInputs>::
+        Convert(*input->extensions());
   }
 
   if (input->hasPaymentEntitiesLogos()) {
