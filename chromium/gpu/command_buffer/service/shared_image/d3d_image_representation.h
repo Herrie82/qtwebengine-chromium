@@ -46,6 +46,7 @@ class GLTexturePassthroughD3DImageRepresentation
       gl_texture_holders_;
 };
 
+#if BUILDFLAG(USE_DAWN)
 // Representation of a D3DImageBacking as a Dawn Texture
 class DawnD3DImageRepresentation : public DawnImageRepresentation {
  public:
@@ -67,6 +68,7 @@ class DawnD3DImageRepresentation : public DawnImageRepresentation {
   wgpu::Texture texture_;
   std::vector<wgpu::TextureFormat> view_formats_;
 };
+#endif  // BUILDFLAG(USE_DAWN)
 
 class DawnD3DBufferRepresentation : public DawnBufferRepresentation {
  public:

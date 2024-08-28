@@ -25,7 +25,9 @@
 #include "gpu/command_buffer/service/dxgi_shared_handle_manager.h"
 #include "gpu/command_buffer/service/memory_tracking.h"
 #include "gpu/command_buffer/service/shared_context_state.h"
+#if BUILDFLAG(USE_DAWN)
 #include "gpu/command_buffer/service/shared_image/dawn_shared_texture_cache.h"
+#endif
 #include "gpu/command_buffer/service/shared_image/shared_image_format_service_utils.h"
 #include "gpu/command_buffer/service/texture_manager.h"
 #include "ui/gfx/gpu_memory_buffer_handle.h"
@@ -117,6 +119,7 @@ class GPU_GLES2_EXPORT D3DImageBacking final
   void ReadbackToMemoryAsync(const std::vector<SkPixmap>& pixmaps,
                              base::OnceCallback<void(bool)> callback) override;
   bool PresentSwapChain() override;
+#if BUILDFLAG(USE_DAWN)
   std::unique_ptr<DawnImageRepresentation> ProduceDawn(
       SharedImageManager* manager,
       MemoryTypeTracker* tracker,
@@ -124,6 +127,7 @@ class GPU_GLES2_EXPORT D3DImageBacking final
       wgpu::BackendType backend_type,
       std::vector<wgpu::TextureFormat> view_formats,
       scoped_refptr<SharedContextState> context_state) override;
+#endif
   void UpdateExternalFence(
       scoped_refptr<gfx::D3DSharedFence> external_fence) override;
 
@@ -133,6 +137,7 @@ class GPU_GLES2_EXPORT D3DImageBacking final
   void EndAccessD3D11(Microsoft::WRL::ComPtr<ID3D11Device> d3d11_device,
                       bool is_overlay_access = false);
 
+#if BUILDFLAG(USE_DAWN)
   wgpu::Texture BeginAccessDawn(const wgpu::Device& device,
                                 wgpu::BackendType backend_type,
                                 wgpu::TextureUsage usage,
@@ -155,6 +160,7 @@ class GPU_GLES2_EXPORT D3DImageBacking final
                                      wgpu::BackendType backend_type,
                                      wgpu::BufferUsage usage);
   void EndAccessDawnBuffer(const wgpu::Device& device, wgpu::Buffer buffer);
+#endif
 
   std::unique_ptr<WebNNTensorRepresentation> ProduceWebNNTensor(
       SharedImageManager* manager,
@@ -348,6 +354,7 @@ class GPU_GLES2_EXPORT D3DImageBacking final
 
   // Uses either DXGISharedHandleState or internal |dawn_shared_texture_cache_|
   // depending on whether the texture has a shared handle or not.
+#if BUILDFLAG(USE_DAWN)
   wgpu::SharedTextureMemory GetSharedTextureMemory(const wgpu::Device& device)
       EXCLUSIVE_LOCKS_REQUIRED(lock_);
 
@@ -360,6 +367,7 @@ class GPU_GLES2_EXPORT D3DImageBacking final
   // texture after ending this access.
   int TrackEndAccessToWGPUTexture(wgpu::Texture texture)
       EXCLUSIVE_LOCKS_REQUIRED(lock_);
+#endif
 
   // Texture could be nullptr if an empty backing is needed for testing.
   const Microsoft::WRL::ComPtr<ID3D11Texture2D> d3d11_texture_;
@@ -454,8 +462,10 @@ class GPU_GLES2_EXPORT D3DImageBacking final
   // DawnSharedTextureCache that keeps an internal cache of per-device
   // SharedTextureData that vends WebGPU textures for the underlying d3d
   // texture. Only used if the backing doesn't have a shared handle.
+#if BUILDFLAG(USE_DAWN)
   scoped_refptr<DawnSharedTextureCache> dawn_shared_texture_cache_
       GUARDED_BY(lock_);
+#endif
 
   // Dawn SharedBufferMemory will exist when backing is being used for buffer
   // interop.

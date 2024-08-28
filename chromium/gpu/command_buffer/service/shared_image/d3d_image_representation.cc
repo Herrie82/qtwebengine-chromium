@@ -94,6 +94,7 @@ void GLTexturePassthroughD3DImageRepresentation::EndAccess() {
   d3d_image_backing->EndAccessD3D11(d3d11_device_);
 }
 
+#if BUILDFLAG(USE_DAWN)
 DawnD3DImageRepresentation::DawnD3DImageRepresentation(
     SharedImageManager* manager,
     SharedImageBacking* backing,
@@ -169,6 +170,7 @@ void DawnD3DBufferRepresentation::EndAccess() {
   // with other backings).
   buffer_ = nullptr;
 }
+#endif  // BUILDFLAG(USE_DAWN)
 
 WebNND3DTensorRepresentation::WebNND3DTensorRepresentation(
     SharedImageManager* manager,
