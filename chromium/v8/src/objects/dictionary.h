@@ -67,16 +67,16 @@ class EXPORT_TEMPLATE_DECLARE(V8_EXPORT_PRIVATE) Dictionary
   static const bool kIsOrderedDictionaryType = false;
 
   // Delete a property from the dictionary.
-  template <template <typename> typename HandleType>
-    requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
+  template <template <typename> typename HandleType, typename =
+    std::enable_if_t<std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>, void*>>
   V8_WARN_UNUSED_RESULT static HandleType<Derived> DeleteEntry(
       Isolate* isolate, HandleType<Derived> dictionary, InternalIndex entry);
 
   // Attempt to shrink the dictionary after deletion of key.
-  template <template <typename> typename HandleType>
+  template <template <typename> typename HandleType, typename =
+    std::enable_if_t<std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>, void*>>
   V8_WARN_UNUSED_RESULT static inline HandleType<Derived> Shrink(
       Isolate* isolate, HandleType<Derived> dictionary)
-    requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
   {
     return DerivedHashTable::Shrink(isolate, dictionary);
   }
@@ -124,8 +124,8 @@ class EXPORT_TEMPLATE_DECLARE(V8_EXPORT_PRIVATE) Dictionary
 
  protected:
   // Generic at put operation.
-  template <template <typename> typename HandleType>
-    requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
+  template <template <typename> typename HandleType,
+           typename = std::enable_if_t<std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>, void*>>
   V8_WARN_UNUSED_RESULT static HandleType<Derived> AtPut(
       Isolate* isolate, HandleType<Derived> dictionary, Key key,
       DirectHandle<Object> value, PropertyDetails details);
@@ -209,8 +209,8 @@ class EXPORT_TEMPLATE_DECLARE(V8_EXPORT_PRIVATE) BaseNameDictionary
   static DirectHandle<FixedArray> IterationIndices(
       Isolate* isolate, DirectHandle<Derived> dictionary);
 
-  template <typename IsolateT, template <typename> typename HandleType>
-    requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
+  template <typename IsolateT, template <typename> typename HandleType,
+           typename = std::enable_if_t<std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>, void*>>
   V8_WARN_UNUSED_RESULT static HandleType<Derived>
   AddNoUpdateNextEnumerationIndex(IsolateT* isolate,
                                   HandleType<Derived> dictionary, Key key,
@@ -218,8 +218,8 @@ class EXPORT_TEMPLATE_DECLARE(V8_EXPORT_PRIVATE) BaseNameDictionary
                                   PropertyDetails details,
                                   InternalIndex* entry_out = nullptr);
 
-  template <template <typename> typename HandleType>
-    requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
+  template <template <typename> typename HandleType,
+           typename = std::enable_if_t<std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>, void*>>
   V8_WARN_UNUSED_RESULT static HandleType<Derived> Add(
       Isolate* isolate, HandleType<Derived> dictionary, Key key,
       DirectHandle<Object> value, PropertyDetails details,
@@ -430,9 +430,9 @@ class NumberDictionary
   DECL_PRINTER(NumberDictionary)
 
   // Type specific at put (default NONE attributes is used when adding).
-  template <template <typename> typename HandleType>
-    requires(std::is_convertible_v<HandleType<NumberDictionary>,
-                                   DirectHandle<NumberDictionary>>)
+  template <template <typename> typename HandleType, typename =
+    std::enable_if_t<std::is_convertible_v<HandleType<NumberDictionary>,
+                                   DirectHandle<NumberDictionary>>, void*>>
   V8_WARN_UNUSED_RESULT static HandleType<NumberDictionary> Set(
       Isolate* isolate, HandleType<NumberDictionary> dictionary, uint32_t key,
       DirectHandle<Object> value,
