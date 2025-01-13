@@ -1167,6 +1167,7 @@ void PopulateFrameBinders(RenderFrameHostImpl* host, mojo::BinderMap* map) {
         base::Unretained(host)));
   }
 
+#if BUILDFLAG(USE_ML)
   if (base::FeatureList::IsEnabled(blink::features::kLanguageDetectionAPI)) {
     map->Add<language_detection::mojom::ContentLanguageDetectionDriver>(
         base::BindRepeating(
@@ -1180,6 +1181,7 @@ void PopulateFrameBinders(RenderFrameHostImpl* host, mojo::BinderMap* map) {
             },
             base::Unretained(host)));
   }
+#endif
 }
 
 void PopulateBinderMapWithContext(
@@ -1460,6 +1462,7 @@ void PopulateDedicatedWorkerBinders(DedicatedWorkerHost* host,
         },
         base::Unretained(host)));
   }
+#if BUILDFLAG(USE_ML)
   if (base::FeatureList::IsEnabled(blink::features::kLanguageDetectionAPI)) {
     map->Add<language_detection::mojom::ContentLanguageDetectionDriver>(
         base::BindRepeating(
@@ -1473,6 +1476,7 @@ void PopulateDedicatedWorkerBinders(DedicatedWorkerHost* host,
             },
             base::Unretained(host)));
   }
+#endif
 }
 
 void PopulateBinderMapWithContext(
@@ -1581,6 +1585,7 @@ void PopulateSharedWorkerBinders(SharedWorkerHost* host, mojo::BinderMap* map) {
         },
         base::Unretained(host)));
   }
+#if BUILDFLAG(USE_ML)
   if (base::FeatureList::IsEnabled(blink::features::kLanguageDetectionAPI)) {
     map->Add<language_detection::mojom::ContentLanguageDetectionDriver>(
         base::BindRepeating(
@@ -1594,6 +1599,7 @@ void PopulateSharedWorkerBinders(SharedWorkerHost* host, mojo::BinderMap* map) {
             },
             base::Unretained(host)));
   }
+#endif
 
 #if !BUILDFLAG(IS_ANDROID)
   map->Add<blink::mojom::DirectSocketsService>(base::BindRepeating(
