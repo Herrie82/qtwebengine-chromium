@@ -453,13 +453,15 @@ std::string BuildCrashString(const char* file,
                              const char* message_without_prefix) {
   // Only log last path component.
   if (file) {
-    const char* slash = UNSAFE_TODO(strrchr(file,
 #if BUILDFLAG(IS_WIN)
+    const char* slash = UNSAFE_TODO(strrchr(file,
                                             '\\'
-#else
-                                            '/'
-#endif  // BUILDFLAG(IS_WIN)
                                             ));
+#else
+    const char* slash = UNSAFE_TODO(strrchr(file,
+                                            '/'
+                                            ));
+#endif  // BUILDFLAG(IS_WIN)
     if (slash) {
       file = UNSAFE_TODO(slash + 1);
     }

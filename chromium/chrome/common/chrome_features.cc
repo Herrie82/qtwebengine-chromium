@@ -474,16 +474,21 @@ BASE_FEATURE(kGlicURLConfig, "GlicURLConfig", base::FEATURE_ENABLED_BY_DEFAULT);
 const base::FeatureParam<std::string> kGlicGuestURL{
     &kGlicURLConfig, "glic-guest-url", "https://gemini.google.com/glic"};
 
+#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
 BASE_FEATURE_PARAM(std::string,
                    kGlicUserStatusUrl,
                    &kGlicUserStatusCheck,
                    "glic-user-status-url",
-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
                    "https://geminiweb-pa.googleapis.com/v1/glicStatus"
-#else
-                   ""
-#endif
 );
+#else
+BASE_FEATURE_PARAM(std::string,
+                   kGlicUserStatusUrl,
+                   &kGlicUserStatusCheck,
+                   "glic-user-status-url",
+                   ""
+);
+#endif
 
 BASE_FEATURE_PARAM(base::TimeDelta,
                    kGlicUserStatusRequestDelay,
@@ -574,16 +579,21 @@ BASE_FEATURE_PARAM(std::string,
                    &kGlicLearnMoreURLConfig,
                    "glic-settings-page-learn-more-url",
                    "");
+#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
 BASE_FEATURE_PARAM(std::string,
                    kGlicExtensionsManagementUrl,
                    &kGlicLearnMoreURLConfig,
                    "glic-extensions-management-url",
-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
                    "https://gemini.google.com/apps"
-#else
-                   ""
-#endif
 );
+#else
+BASE_FEATURE_PARAM(std::string,
+                   kGlicExtensionsManagementUrl,
+                   &kGlicLearnMoreURLConfig,
+                   "glic-extensions-management-url",
+                   ""
+);
+#endif
 
 BASE_FEATURE(kGlicCSPConfig, "GlicCSPConfig", base::FEATURE_ENABLED_BY_DEFAULT);
 // TODO(crbug.com/378951332): Set appropriate default.

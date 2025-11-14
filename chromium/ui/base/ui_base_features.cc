@@ -281,14 +281,17 @@ bool IsTouchTextEditingRedesignEnabled() {
 }
 
 // This feature enables drag and drop using touch input devices.
+#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
 BASE_FEATURE(kTouchDragAndDrop,
              "TouchDragAndDrop",
-#if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_ANDROID)
              base::FEATURE_ENABLED_BY_DEFAULT
-#else
-             base::FEATURE_DISABLED_BY_DEFAULT
-#endif
 );
+#else
+BASE_FEATURE(kTouchDragAndDrop,
+             "TouchDragAndDrop",
+             base::FEATURE_DISABLED_BY_DEFAULT
+);
+#endif
 
 bool IsTouchDragAndDropEnabled() {
   static const bool touch_drag_and_drop_enabled =
@@ -477,14 +480,17 @@ BASE_FEATURE(kPlatformClipboardMonitor,
 // If enabled, all draw commands recorded on canvas are done in pixel aligned
 // measurements. This also enables scaling of all elements in views and layers
 // to be done via corner points. See https://crbug.com/720596 for details.
+#if BUILDFLAG(IS_CHROMEOS)
 BASE_FEATURE(kEnablePixelCanvasRecording,
              "enable-pixel-canvas-recording",
-#if BUILDFLAG(IS_CHROMEOS)
              base::FEATURE_ENABLED_BY_DEFAULT
-#else
-             base::FEATURE_DISABLED_BY_DEFAULT
-#endif
 );
+#else
+BASE_FEATURE(kEnablePixelCanvasRecording,
+             "enable-pixel-canvas-recording",
+             base::FEATURE_DISABLED_BY_DEFAULT
+);
+#endif
 
 bool IsPixelCanvasRecordingEnabled() {
   return base::FeatureList::IsEnabled(features::kEnablePixelCanvasRecording);

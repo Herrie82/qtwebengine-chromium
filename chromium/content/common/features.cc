@@ -722,14 +722,17 @@ BASE_FEATURE(kWebAssemblyDynamicTiering,
              base::FEATURE_ENABLED_BY_DEFAULT);
 
 // Enables in-process resource loading for WebUI renderer processes.
+#if BUILDFLAG(IS_ANDROID)
 BASE_FEATURE(kWebUIInProcessResourceLoading,
              "WebUIInProcessResourceLoading",
-#if BUILDFLAG(IS_ANDROID)
              base::FEATURE_DISABLED_BY_DEFAULT
-#else
-             base::FEATURE_ENABLED_BY_DEFAULT
-#endif
 );
+#else
+BASE_FEATURE(kWebUIInProcessResourceLoading,
+             "WebUIInProcessResourceLoading",
+             base::FEATURE_ENABLED_BY_DEFAULT
+);
+#endif
 
 // Enables WebOTP calls in cross-origin iframes if allowed by Permissions
 // Policy.

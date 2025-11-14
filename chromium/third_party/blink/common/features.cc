@@ -659,14 +659,17 @@ BASE_FEATURE_PARAM(bool,
                    "delay_async_exec_opt_out_high_fetch_priority_hint",
                    true);
 
+#if BUILDFLAG(IS_ANDROID)
 BASE_FEATURE(kDelayLayerTreeViewDeletionOnLocalSwap,
              "DelayLayerTreeViewDeletionOnLocalSwap",
-#if BUILDFLAG(IS_ANDROID)
              base::FEATURE_ENABLED_BY_DEFAULT
-#else
-             base::FEATURE_DISABLED_BY_DEFAULT
-#endif
 );
+#else
+BASE_FEATURE(kDelayLayerTreeViewDeletionOnLocalSwap,
+             "DelayLayerTreeViewDeletionOnLocalSwap",
+             base::FEATURE_DISABLED_BY_DEFAULT
+);
+#endif
 
 BASE_FEATURE_PARAM(base::TimeDelta,
                    kDelayLayerTreeViewDeletionOnLocalSwapTaskDelayParam,
@@ -755,16 +758,21 @@ BASE_FEATURE(kEventTimingIgnorePresentationTimeFromUnexpectedFrameSource,
 BASE_FEATURE(kExpandCompositedCullRect,
              "ExpandCompositedCullRect",
              base::FEATURE_ENABLED_BY_DEFAULT);
+#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_FUCHSIA)
 BASE_FEATURE_PARAM(int,
                    kCullRectPixelDistanceToExpand,
                    &kExpandCompositedCullRect,
                    "pixels",
-#if BUILDFLAG(IS_ANDROID) || BUILDFLAG(IS_FUCHSIA)
                    2000
-#else
-                   4000
-#endif
 );
+#else
+BASE_FEATURE_PARAM(int,
+                   kCullRectPixelDistanceToExpand,
+                   &kExpandCompositedCullRect,
+                   "pixels",
+                   4000
+);
+#endif
 BASE_FEATURE_PARAM(double,
                    kCullRectExpansionDPRCoef,
                    &kExpandCompositedCullRect,
@@ -1815,14 +1823,17 @@ BASE_FEATURE(kLowLatencyWebGLImageChromium,
              base::FEATURE_DISABLED_BY_DEFAULT);
 #endif
 
+#if BUILDFLAG(IS_ANDROID)
 BASE_FEATURE(kLowPriorityAsyncScriptExecution,
              "LowPriorityAsyncScriptExecution",
-#if BUILDFLAG(IS_ANDROID)
              base::FEATURE_DISABLED_BY_DEFAULT
-#else
-             base::FEATURE_ENABLED_BY_DEFAULT
-#endif
 );
+#else
+BASE_FEATURE(kLowPriorityAsyncScriptExecution,
+             "LowPriorityAsyncScriptExecution",
+             base::FEATURE_ENABLED_BY_DEFAULT
+);
+#endif
 
 BASE_FEATURE_PARAM(base::TimeDelta,
                    kTimeoutForLowPriorityAsyncScriptExecution,
@@ -2358,14 +2369,17 @@ BASE_FEATURE(kScriptStreaming,
              "ScriptStreaming",
              base::FEATURE_ENABLED_BY_DEFAULT);
 // Enables script streaming for non-http scripts.
+#if BUILDFLAG(IS_ANDROID)
 BASE_FEATURE(kScriptStreamingForNonHTTP,
              "ScriptStreamingForNonHTTP",
-#if BUILDFLAG(IS_ANDROID)
              base::FEATURE_DISABLED_BY_DEFAULT
-#else
-             base::FEATURE_ENABLED_BY_DEFAULT
-#endif
 );
+#else
+BASE_FEATURE(kScriptStreamingForNonHTTP,
+             "ScriptStreamingForNonHTTP",
+             base::FEATURE_ENABLED_BY_DEFAULT
+);
+#endif
 
 // Enables sending Sec-Purpose: "prefetch" header for
 // NoStatePrefetchURLLoaderThrottle.
@@ -2709,8 +2723,6 @@ BASE_FEATURE(kVSyncEncoding,
              "VSyncEncoding",
              base::FEATURE_DISABLED_BY_DEFAULT);
 
-BASE_FEATURE(kWebBluetoothCancelConnect,
-             "WebBluetoothCancelConnect",
 // TODO(382556910): Enable on Windows when DCHECK issue is resolved.
 // TODO(40502943): Enable on Android when connect callback can be called when
 // cancelled.
@@ -2718,8 +2730,12 @@ BASE_FEATURE(kWebBluetoothCancelConnect,
 // device is unreachable, so it does not have hang issue like MacOS which
 // definitely needs cancel to get from the hang state.
 #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID)
+BASE_FEATURE(kWebBluetoothCancelConnect,
+             "WebBluetoothCancelConnect",
              base::FEATURE_DISABLED_BY_DEFAULT);
 #else
+BASE_FEATURE(kWebBluetoothCancelConnect,
+             "WebBluetoothCancelConnect",
              base::FEATURE_ENABLED_BY_DEFAULT);
 #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_ANDROID)
 

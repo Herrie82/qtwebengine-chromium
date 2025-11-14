@@ -413,13 +413,15 @@ BASE_FEATURE(kWebrtcMediaCapabilitiesParameters,
 
 // Controls the persistent license support for protected media that uses
 // widevine.
+#if BUILDFLAG(ENABLE_LIBRARY_CDMS)
 BASE_FEATURE(kWidevinePersistentLicenseSupport,
              "WidevinePersistentLicenseSupport",
-#if BUILDFLAG(ENABLE_LIBRARY_CDMS)
              // TODO(crbug.com/423458074): This will rollout slowly as an
              // experiment eventually becoming disabled by default.
              base::FEATURE_ENABLED_BY_DEFAULT);
 #else
+BASE_FEATURE(kWidevinePersistentLicenseSupport,
+             "WidevinePersistentLicenseSupport",
              base::FEATURE_ENABLED_BY_DEFAULT);
 #endif  // BUILDFLAG(ENABLE_LIBRARY_CDMS)
 
@@ -701,11 +703,13 @@ BASE_FEATURE(kFileDialogsBlockPictureInPicture,
              base::FEATURE_DISABLED_BY_DEFAULT);
 
 // Tucks picture-in-picture windows while file dialogs are open.
+#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
 BASE_FEATURE(kFileDialogsTuckPictureInPicture,
              "FileDialogsTuckPictureInPicture",
-#if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
              base::FEATURE_ENABLED_BY_DEFAULT);
 #else
+BASE_FEATURE(kFileDialogsTuckPictureInPicture,
+             "FileDialogsTuckPictureInPicture",
              base::FEATURE_DISABLED_BY_DEFAULT);
 #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC)
 #endif  // !BUILDFLAG(IS_ANDROID)
@@ -1240,14 +1244,17 @@ BASE_FEATURE(kUseAudioManagerMaxChannelLayout,
 #endif  // BUILDFLAG(IS_ANDROID)
 
 #if BUILDFLAG(ENABLE_HLS_DEMUXER)
+#if BUILDFLAG(IS_ANDROID)
 BASE_FEATURE(kBuiltInHlsPlayer,
              "BuiltInHlsPlayer",
-#if BUILDFLAG(IS_ANDROID)
              base::FEATURE_ENABLED_BY_DEFAULT
-#else
-             base::FEATURE_DISABLED_BY_DEFAULT
-#endif
 );
+#else
+BASE_FEATURE(kBuiltInHlsPlayer,
+             "BuiltInHlsPlayer",
+             base::FEATURE_DISABLED_BY_DEFAULT
+);
+#endif
 
 #endif  // BUILDFLAG(ENABLE_HLS_DEMUXER)
 
