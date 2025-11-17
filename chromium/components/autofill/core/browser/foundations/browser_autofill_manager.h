@@ -38,20 +38,20 @@
 #include "components/autofill/core/browser/foundations/autofill_manager.h"
 #if !BUILDFLAG(IS_QTWEBENGINE)
 #include "components/autofill/core/browser/integrators/autofill_ai/autofill_ai_manager.h"
-#endif
 #include "components/autofill/core/browser/integrators/fast_checkout/fast_checkout_delegate.h"
+#endif
 #include "components/autofill/core/browser/integrators/password_form_classification.h"
 #include "components/autofill/core/browser/integrators/password_manager/password_manager_delegate.h"
-#if !BUILDFLAG(IS_QTWEBENGINE)
 #include "components/autofill/core/browser/integrators/plus_addresses/autofill_plus_address_delegate.h"
-#endif
 #include "components/autofill/core/browser/integrators/touch_to_fill/touch_to_fill_delegate.h"
-#if !BUILDFLAG(IS_QTWEBENGINE)
 #include "components/autofill/core/browser/metrics/autofill_metrics.h"
 #include "components/autofill/core/browser/metrics/form_events/address_form_event_logger.h"
+#if !BUILDFLAG(IS_QTWEBENGINE)
 #include "components/autofill/core/browser/metrics/form_events/credit_card_form_event_logger.h"
 #include "components/autofill/core/browser/metrics/form_events/loyalty_card_form_event_logger.h"
+#endif
 #include "components/autofill/core/browser/metrics/log_event.h"
+#if !BUILDFLAG(IS_QTWEBENGINE)
 #include "components/autofill/core/browser/payments/autofill_offer_manager.h"
 #include "components/autofill/core/browser/payments/card_unmask_delegate.h"
 #include "components/autofill/core/browser/payments/full_card_request.h"
@@ -202,7 +202,6 @@ class BrowserAutofillManager : public AutofillManager {
 
   CreditCardAccessManager& GetCreditCardAccessManager();
   const CreditCardAccessManager& GetCreditCardAccessManager() const;
-#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Gets the payments BNPL manager owned by `this`. This will be used to
   // handle BNPL flows. May return nullptr if BNPL is not supported on the
@@ -212,6 +211,7 @@ class BrowserAutofillManager : public AutofillManager {
   // Gets the amount extraction manager owned by `this`. This will be used for
   // flows that require amount extraction from the page.
   payments::AmountExtractionManager& GetAmountExtractionManager();
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Handles post-filling logic of `form`, like notifying observers and logging
   // form metrics.
@@ -247,9 +247,11 @@ class BrowserAutofillManager : public AutofillManager {
       const FormData& form,
       const FieldGlobalId& field_id,
       const std::u16string& old_value) override;
+#if !BUILDFLAG(IS_QTWEBENGINE)
   void OnLoadedServerPredictionsImpl(
       base::span<const raw_ptr<FormStructure, VectorExperimental>> forms)
       override;
+#endif
   void Reset() override;
 
   // Retrieves the four digit combinations from the DOM of the current web page
@@ -560,7 +562,6 @@ class BrowserAutofillManager : public AutofillManager {
       const std::vector<std::string>& plus_addresses,
       std::vector<std::string> one_time_passwords);
 
-#if !BUILDFLAG(IS_QTWEBENGINE)
   // Receives the lists of plus address and single field form fill suggestions
   // and combines them. It gives priority to the plus address suggestions,
   // ensuring they appear first in the final combined list that's sent to
@@ -575,6 +576,7 @@ class BrowserAutofillManager : public AutofillManager {
       std::vector<Suggestion> plus_address_suggestions,
       std::vector<Suggestion> single_field_suggestions);
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Triggered when the user undoes the filling of an address profile using an
   // email override.
   void OnEmailOverrideUndone(const std::u16string& original_email,

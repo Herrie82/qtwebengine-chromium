@@ -220,6 +220,7 @@ class AutofillClient {
     ArrowPosition arrow_position;
   };
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Contains the result of a user interaction with the save/update AutofillAi
   // prompt.
   struct EntitySaveOrUpdatePromptResult final {
@@ -241,6 +242,7 @@ class AutofillClient {
   };
   using EntitySaveOrUpdatePromptResultCallback =
       base::OnceCallback<void(EntitySaveOrUpdatePromptResult result)>;
+#endif
 
   // Callback to run when the user makes a decision on whether to save the
   // profile. If the user edits the Autofill profile and then accepts edits, the
@@ -335,13 +337,13 @@ class AutofillClient {
   // Returns the `AutofillComposeDelegate` instance for the tab of this client.
   virtual AutofillComposeDelegate* GetComposeDelegate();
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Attempts to the annotated page content for the current tab and calls
   // `callback` with the results.
   using GetAiPageContentCallback = base::OnceCallback<void(
       std::optional<optimization_guide::proto::AnnotatedPageContent>)>;
   virtual void GetAiPageContent(GetAiPageContentCallback callback);
 
-#if !BUILDFLAG(IS_QTWEBENGINE)
   // Returns the `AutofillAiManager` instance for the tab of this client.
   // Returns `nullptr` if, at the time of the AutofillClient's construction, the
   // Autofill AI feature is unsupported.
@@ -463,7 +465,7 @@ class AutofillClient {
   // Returns the translate driver, if available, which is used to observe the
   // page language for language-dependent heuristics.
   virtual translate::TranslateDriver* GetTranslateDriver() = 0;
-#endif
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Retrieves the country code of the user from Chrome variation service.
   // If the variation service is not available, return an empty string.
@@ -564,10 +566,10 @@ class AutofillClient {
   virtual void TriggerUserPerceptionOfAutofillSurvey(
       FillingProduct filling_product,
       const std::map<std::string, std::string>& field_filling_stats_data);
-#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Triggers a survey to ask the user why they declined saving an address.
   virtual void TriggerDeclinedSaveAddressReasonSurvey();
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Returns true if either Profile or CreditCard Autofill is enabled.
   virtual bool IsAutofillEnabled() const = 0;
@@ -654,6 +656,7 @@ class AutofillClient {
   // Notifies the IPH code that `feature` was used.
   virtual void NotifyIphFeatureUsed(AutofillClient::IphFeature feature);
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Stores test addresses provided by devtools and used to help developers
   // debug their forms with a list of well formatted addresses. Differently from
   // other `AutofillProfile`s/addresses, this list is stored in the client,
@@ -662,6 +665,7 @@ class AutofillClient {
 
   virtual base::span<const AutofillProfile> GetTestAddresses() const
       LIFETIME_BOUND;
+#endif
 
   // Returns the heuristics predictions for the renderer form to which
   // `field_id` belongs inside the form with `form_id`. The browser form with
@@ -679,6 +683,7 @@ class AutofillClient {
   virtual void TriggerPlusAddressUserPerceptionSurvey(
       plus_addresses::hats::SurveyType survey_type);
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Returns the service used in order to log metrics into MQLS.
   virtual optimization_guide::ModelQualityLogsUploaderService*
   GetMqlsUploadService();
@@ -690,6 +695,7 @@ class AutofillClient {
       EntityInstance new_entity,
       std::optional<EntityInstance> old_entity,
       EntitySaveOrUpdatePromptResultCallback save_prompt_acceptance_callback);
+#endif
 };
 
 }  // namespace autofill

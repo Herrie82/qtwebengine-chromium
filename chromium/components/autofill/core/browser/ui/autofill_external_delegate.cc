@@ -45,7 +45,9 @@
 #include "components/autofill/core/browser/foundations/autofill_client.h"
 #include "components/autofill/core/browser/foundations/autofill_driver.h"
 #include "components/autofill/core/browser/foundations/browser_autofill_manager.h"
+#if !BUILDFLAG(IS_QTWEBENGINE)
 #include "components/autofill/core/browser/integrators/autofill_ai/autofill_ai_manager.h"
+#endif
 #include "components/autofill/core/browser/integrators/compose/autofill_compose_delegate.h"
 #if !BUILDFLAG(IS_QTWEBENGINE)
 #include "components/autofill/core/browser/integrators/plus_addresses/autofill_plus_address_delegate.h"
@@ -1220,7 +1222,7 @@ void AutofillExternalDelegate::FillAutofillFormData(
                                 trigger_source);
   }
 }
-#endif
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
 void AutofillExternalDelegate::InsertDataListValues(
     std::vector<Suggestion>& suggestions) const {
@@ -1229,7 +1231,9 @@ void AutofillExternalDelegate::InsertDataListValues(
     return;
   }
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   AutofillMetrics::LogDataListSuggestionsInserted();
+#endif
   // Go through the list of autocomplete values and remove them if they are in
   // the list of datalist values.
   auto datalist_values = base::MakeFlatSet<std::u16string_view>(

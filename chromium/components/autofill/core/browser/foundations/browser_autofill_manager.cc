@@ -500,12 +500,14 @@ bool ShouldOfferSingleFieldFill(const AutofillField* autofill_field,
   // re-authenticate the use of a credit card the website has on file) will be
   // handled separately because those have the field type
   // CREDIT_CARD_STANDALONE_VERIFICATION_CODE.
+#if !BUILDFLAG(IS_QTWEBENGINE)
   FieldType type = autofill_field ? autofill_field->Type().GetCreditCardType()
                                   : UNKNOWN_TYPE;
   if (data_util::IsCreditCardExpirationType(type) ||
       type == CREDIT_CARD_VERIFICATION_CODE || type == CREDIT_CARD_NUMBER) {
     return false;
   }
+#endif
 
   // Do not offer single field form fill suggestions if popups are suppressed
   // due to an unrecognized autocomplete attribute. Note that in the context
@@ -670,7 +672,6 @@ void MaybeImportFromSubmittedForm(AutofillClient& client,
   client.GetSingleFieldFillRouter().OnWillSubmitForm(
       form_for_autocomplete, &form_structure, client.IsAutocompleteEnabled());
 }
-#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
 // Retrieves the AutofillAI predictions for `form` in `cache` and adds them to
 // `form`'s fields.
@@ -719,6 +720,7 @@ void AddCachedAutofillAiPredictions(const AutofillAiModelCache& cache,
     }
   }
 }
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
 }  // namespace
 
@@ -1169,6 +1171,7 @@ void BrowserAutofillManager::OnAskForValuesToFillImpl(
     const gfx::Rect& caret_bounds,
     AutofillSuggestionTriggerSource trigger_source,
     std::optional<PasswordSuggestionRequest> password_request) {
+#if !BUILDFLAG(IS_QTWEBENGINE)
   if (password_request.has_value()) {
     if (PasswordManagerDelegate* password_delegate =
             client().GetPasswordManagerDelegate(field_id)) {
@@ -1180,14 +1183,15 @@ void BrowserAutofillManager::OnAskForValuesToFillImpl(
       return;
     }
   }
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   if (base::FeatureList::IsEnabled(features::kAutofillDisableFilling)) {
     return;
   }
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   FormStructure* form_structure = nullptr;
   AutofillField* autofill_field = nullptr;
-#if !BUILDFLAG(IS_QTWEBENGINE)
   // In case we cannot fetch the parsed `FormStructure` and `AutofillField`, we
   // still need to offer Autocomplete.
   // TODO(crbug.com/433224307): Consider early returning here when the cache
@@ -1231,7 +1235,6 @@ void BrowserAutofillManager::OnAskForValuesToFillImpl(
       std::make_unique<IbanSuggestionGenerator>());
   suggestion_generators_.push_back(
       std::make_unique<MerchantPromoCodeSuggestionGenerator>());
-#endif
   suggestion_generators_.push_back(
       std::make_unique<AutocompleteSuggestionGenerator>(
           client().GetAutocompleteHistoryManager()->GetProfileDatabase()));
@@ -1251,8 +1254,10 @@ void BrowserAutofillManager::OnAskForValuesToFillImpl(
                                               autofill_field, client(),
                                               barrier_callback);
   }
+#endif
 }
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
 void BrowserAutofillManager::OnSuggestionDataFetched(
     const FormData& form,
     const FormFieldData& field,
@@ -1306,6 +1311,7 @@ void BrowserAutofillManager::OnIndividualSuggestionsGenerated(
   // needed.
   suggestion_generators_.clear();
 }
+#endif
 
 void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase1(
     const FormData& form,
@@ -1316,13 +1322,13 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase1(
 #if !BUILDFLAG(IS_QTWEBENGINE)
   const AutofillPlusAddressDelegate* plus_address_delegate =
       client().GetPlusAddressDelegate();
-#endif
   // In case we cannot fetch the parsed `FormStructure` and `AutofillField`, we
   // still need to offer Autocomplete.
   // TODO(crbug.com/433224307): Consider early returning here when the cache
   // starts storing all forms and fields.
   std::ignore = GetCachedFormAndField(form.global_id(), field.global_id(),
                                       &form_structure, &autofill_field);
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   SuggestionsContext context = BuildSuggestionsContext(
       form, form_structure, field, autofill_field, trigger_source);
@@ -1350,7 +1356,7 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase1(
 
     return;
   }
-#endif  // !BUILDFLAG(IS_QTWEBENGINE)
+#endif
 
   std::move(generate_suggestions_and_maybe_show_ui_phase2)
       .Run(/*plus_addresses=*/{});
@@ -1378,18 +1384,21 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase2(
       form_structure && autofill_field && otp_delegate &&
       otp_delegate->IsFieldEligibleForOtpFilling(form_structure->global_id(),
                                                  autofill_field->global_id());
+#endif
 
   auto generate_suggestions_and_maybe_show_ui_phase3 = base::BindOnce(
       &BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase3,
       weak_ptr_factory_.GetWeakPtr(), form, field, trigger_source, context,
       plus_addresses);
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   if (eligible_for_otp_filling) {
     otp_delegate->GetOtpSuggestions(
         form_structure->global_id(), autofill_field->global_id(),
         std::move(generate_suggestions_and_maybe_show_ui_phase3));
     return;
   }
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   std::move(generate_suggestions_and_maybe_show_ui_phase3)
       .Run(/*otp_suggestions=*/{});
@@ -1407,8 +1416,9 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase3(
                      weak_ptr_factory_.GetWeakPtr(), form.global_id(),
                      field.global_id(), trigger_source, context);
 
-  FormStructure* form_structure = nullptr;
   AutofillField* autofill_field = nullptr;
+#if !BUILDFLAG(IS_QTWEBENGINE)
+  FormStructure* form_structure = nullptr;
   // In case we cannot fetch the parsed `FormStructure` and `AutofillField`, we
   // still need to offer Autocomplete.
   // TODO(crbug.com/433224307): Consider early returning here when the cache
@@ -1505,10 +1515,6 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase3(
 
     return;
   }
-#else
-  std::vector<Suggestion> suggestions = {};
-  AutofillField* autofill_field = nullptr;
-#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Touch to fill is not shown if other address suggestions are available for
   // EMAIL_OR_LOYALTY_MEMBERSHIP_ID fields.
@@ -1529,6 +1535,9 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase3(
                             std::nullopt);
     return;
   }
+#else
+  std::vector<Suggestion> suggestions = {};
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Check if other suggestion sources should be queried. Other suggestions may
   // include Compose or single field form suggestions. Manual fallbacks can't
@@ -1599,7 +1608,6 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase3(
             GetFieldTypeGroupsFromFormStructure(form_structure),
             password_form_classification, trigger_source);
   }
-#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   auto on_single_field_suggestions_callback = base::BindOnce(
       &BrowserAutofillManager::
@@ -1611,7 +1619,6 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase3(
       std::move(plus_address_suggestions));
 
   if (should_offer_single_field_form_fill) {
-#if !BUILDFLAG(IS_QTWEBENGINE)
     // Generating single field suggestions.
     auto on_suggestions_returned = base::BindOnce(
         [](base::OnceCallback<void(std::vector<Suggestion>)> callback,
@@ -1646,14 +1653,21 @@ void BrowserAutofillManager::GenerateSuggestionsAndMaybeShowUIPhase3(
     // suggestions.
     client().GetAutocompleteHistoryManager()->OnGetSingleFieldSuggestions(
             form, field, client(), std::move(on_suggestions_returned));
-#endif
   } else {
     std::move(on_single_field_suggestions_callback)
         .Run(/*single_field_suggestions=*/{});
   }
+#else
+  OnGeneratedPlusAddressAndSingleFieldFillSuggestions(
+      AutofillPlusAddressDelegate::SuggestionContext::kAutocomplete,
+      PasswordFormClassification::Type::kNoPasswordForm,
+      form.global_id(), field,
+      should_offer_single_field_form_fill, std::move(callback),
+      /*plus_address_suggestions=*/{},
+      /*single_field_suggestions=*/{});
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 }
 
-#if !BUILDFLAG(IS_QTWEBENGINE)
 void BrowserAutofillManager::
     OnGeneratedPlusAddressAndSingleFieldFillSuggestions(
         AutofillPlusAddressDelegate::SuggestionContext suggestions_context,
@@ -1665,6 +1679,7 @@ void BrowserAutofillManager::
         std::vector<Suggestion> plus_address_suggestions,
         std::vector<Suggestion> single_field_suggestions) {
   std::vector<Suggestion> suggestions;
+#if !BUILDFLAG(IS_QTWEBENGINE)
   suggestions.reserve(plus_address_suggestions.size() +
                       single_field_suggestions.size());
   // Prioritize plus address over single field form fill suggestions.
@@ -1707,13 +1722,13 @@ void BrowserAutofillManager::
     suggestions.push_back(
         client().GetPlusAddressDelegate()->GetManagePlusAddressSuggestion());
   }
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 
   // Show the list of `suggestions`. These may include single field form field
   // and/or plus address suggestions.
   std::move(callback).Run(/*show_suggestions=*/true, std::move(suggestions),
                           std::nullopt);
 }
-#endif
 
 void BrowserAutofillManager::OnGenerateSuggestionsComplete(
     const FormGlobalId& form_id,
@@ -3102,7 +3117,6 @@ std::vector<Suggestion> BrowserAutofillManager::GetCreditCardSuggestions(
       std::move(summary.metadata_logging_context));
   return suggestions;
 }
-#endif  // !BUILDFLAG_IS_QTWEBENGINE)
 
 std::vector<Suggestion> BrowserAutofillManager::GetLoyaltyCardSuggestions(
     const GURL& url,
@@ -3116,6 +3130,7 @@ std::vector<Suggestion> BrowserAutofillManager::GetLoyaltyCardSuggestions(
   return GetSuggestionsForLoyaltyCards(*valuables_manager, url,
                                        trigger_field.is_autofilled());
 }
+#endif  // !BUILDFLAG_IS_QTWEBENGINE)
 
 // TODO(crbug.com/40219607) Eliminate and replace with a listener?
 // Should we do the same with all the other BrowserAutofillManager events?

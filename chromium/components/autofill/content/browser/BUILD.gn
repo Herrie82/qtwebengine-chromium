@@ -90,7 +90,11 @@ jumbo_static_library("browser") {
       "renderer_forms_from_browser_form.h",
     ]
 
-    deps -= [ "//components/webauthn/core/browser",]
+    deps -= [
+      "//components/credential_management:browser",
+      "//components/os_crypt/sync",
+      "//components/webauthn/core/browser",
+    ]
 
     if (!is_android) {
       deps -= [ "//components/webauthn/content/browser" ]

@@ -414,8 +414,10 @@ class AutofillManager {
       const FormData& form,
       const FieldGlobalId& field_id,
       const std::u16string& old_value) = 0;
+#if !BUILDFLAG(IS_QTWEBENGINE)
   virtual void OnLoadedServerPredictionsImpl(
       base::span<const raw_ptr<FormStructure, VectorExperimental>> forms) = 0;
+#endif
 
   // Return whether the |forms| from OnFormSeen() should be parsed to
   // form_structures.

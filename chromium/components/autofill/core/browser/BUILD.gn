@@ -1055,6 +1055,8 @@ jumbo_static_library("browser") {
       "field_type_utils.h",
       "field_types.cc",
       "field_types.h",
+      "logging/log_buffer_submitter.cc",
+      "logging/log_buffer_submitter.h",
       "filling/filling_product.h",
       "filling/filling_product.cc",
       "form_parsing/field_candidates.cc",
@@ -1080,6 +1082,8 @@ jumbo_static_library("browser") {
       "suggestions/suggestion_type.h",
       "ui/autofill_external_delegate.cc",
       "ui/autofill_external_delegate.h",
+      "webdata/autocomplete/autocomplete_entry.cc",
+      "webdata/autocomplete/autocomplete_entry.h",
     ]
 
     public_deps = []

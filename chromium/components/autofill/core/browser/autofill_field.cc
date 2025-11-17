@@ -24,7 +24,9 @@
 #include "components/autofill/core/browser/field_type_utils.h"
 #include "components/autofill/core/browser/field_types.h"
 #include "components/autofill/core/browser/heuristic_source.h"
+#if !BUILDFLAG(IS_QTWEBENGINE)
 #include "components/autofill/core/browser/ml_model/field_classification_model_handler.h"
+#endif
 #include "components/autofill/core/browser/proto/server.pb.h"
 #include "components/autofill/core/common/autofill_constants.h"
 #include "components/autofill/core/common/autofill_features.h"
@@ -606,6 +608,7 @@ AutofillField::PredictionResult AutofillField::GetOverallPredictionResult()
 
 AutofillField::PredictionResult AutofillField::GetComputedPredictionResult()
     const {
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Some of these (in particular, heuristic_type()) are slow to compute, so
   // cache them in local variables.
   const HtmlFieldType html_type_local = html_type();
@@ -746,6 +749,9 @@ AutofillField::PredictionResult AutofillField::GetComputedPredictionResult()
           heuristic_type_local != UNKNOWN_TYPE
               ? std::optional(AutofillPredictionSource::kHeuristics)
               : std::nullopt};
+#else
+  return {AutofillType(html_type_), std::nullopt};
+#endif  // !BUILDFLAG(IS_QTWEBENGINE)
 }
 
 const std::u16string& AutofillField::value_for_import() const {
