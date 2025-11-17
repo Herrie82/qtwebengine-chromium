@@ -184,7 +184,7 @@ void DevToolsFileHelper::Save(const std::string& url,
       base::FilePath download_path;
       base::FilePath website_save_directory;  // Unused
       profile_->GetDownloadManagerDelegate()->GetSaveDir(
-          web_contents_->GetBrowserContext(), &website_save_directory,
+          profile_, &website_save_directory,
           &download_path);
 #endif  // !BUILDFLAG(IS_QTWEBENGINE)
       initial_path = download_path.AppendASCII(suggested_file_name);
@@ -413,7 +413,7 @@ void DevToolsFileHelper::InnerAddFileSystem(
       BindOnce(&DevToolsFileHelper::AddUserConfirmedFileSystem,
                weak_factory_.GetWeakPtr(), type, path));
 #else
-  AddUserConfirmedFileSystem(weak_factory_.GetWeakPtr(), type, path);
+  AddUserConfirmedFileSystem(type, path, /* allowed */ true);
 #endif  // !BUILDFLAG(IS_QTWEBENGINE)
 }
 
