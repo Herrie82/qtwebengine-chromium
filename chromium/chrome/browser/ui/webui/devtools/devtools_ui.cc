@@ -86,8 +86,11 @@ DevToolsUI::DevToolsUI(content::WebUI* web_ui)
   web_ui->SetBindings(content::BindingsPolicySet());
   content::BrowserContext* browser_context =
       web_ui->GetWebContents()->GetBrowserContext();
-  if (IsInspectionAllowed(Profile::FromBrowserContext(browser_context),
-                          static_cast<content::WebContents*>(nullptr))) {
+#if !BUILDFLAG(IS_QTWEBENGINE)
+   if (IsInspectionAllowed(Profile::FromBrowserContext(browser_context),
+                           static_cast<content::WebContents*>(nullptr)))
+#endif
+  {
     auto factory = browser_context->GetDefaultStoragePartition()
                        ->GetURLLoaderFactoryForBrowserProcess();
     content::URLDataSource::Add(
