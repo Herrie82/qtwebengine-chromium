@@ -108,7 +108,7 @@ class PackageInitializer(object):
         PathManager.init(root_src_dir=self._root_src_dir,
                          root_gen_dir=self._root_gen_dir,
                          component_reldirs=self._component_reldirs,
-                         union_name_mapper=union_name_mapper
+                         union_name_mapper=union_name_mapper,
                          enable_shorter_filenames=self._enable_shorter_filenames)
 
         style_format.init(root_src_dir=self._root_src_dir,
