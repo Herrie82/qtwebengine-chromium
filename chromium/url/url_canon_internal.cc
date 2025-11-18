@@ -40,7 +40,7 @@ namespace {
 // This has some startup cost to load the constants and such, so it's
 // usually not worth it for short strings.
 size_t FindInitialQuerySafeString(std::string_view source) {
-#if (defined(__SSE2__) || defined(__aarch64__)) && defined(__clang__)
+#if (defined(__SSE2__) || defined(__aarch64__)) && (defined(__clang__)  || defined(__GNUC__))
   constexpr size_t kChunkSize = 16;
   size_t i;
   for (i = 0; i < base::bits::AlignDown(source.length(), kChunkSize);
@@ -69,7 +69,8 @@ size_t FindInitialQuerySafeString(std::string_view source) {
 #elif defined(__SSE2__)
   constexpr size_t kChunkSize = 16;
   size_t i;
-  for (i = 0; i < base::bits::AlignDown(length, kChunkSize); i += kChunkSize) {
+  for (i = 0; i < base::bits::AlignDown(source.length(), kChunkSize);
+       i += kChunkSize) {
     __m128i b;
     // memcpy((char*)&b, source + i, sizeof(b));
     b = _mm_loadu_si128((__m128i*)(source + i));
