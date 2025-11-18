@@ -144,12 +144,10 @@ class GPU_GLES2_EXPORT IOSurfaceImageBacking
   void AddWGPUDeviceWithPendingCommands(wgpu::Device device)
       EXCLUSIVE_LOCKS_REQUIRED(lock_);
 
-#if !BUILDFLAG(IS_QTWEBENGINE)
   void AddEGLDisplayWithPendingCommands(gl::GLDisplayEGL* display)
       EXCLUSIVE_LOCKS_REQUIRED(lock_);
   void ClearEGLDisplaysWithPendingCommands(gl::GLDisplayEGL* display_to_keep)
       EXCLUSIVE_LOCKS_REQUIRED(lock_);
-#endif
 
   // Wait for commands to be scheduled on every WGPUDevice or EGLDisplay that's
   // pending a flush except those using the same MTLDevice as `waiting_device`.

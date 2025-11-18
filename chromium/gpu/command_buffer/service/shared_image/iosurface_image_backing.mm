@@ -1419,16 +1419,16 @@ void IOSurfaceImageBacking::AddEGLDisplayWithPendingCommands(
 #endif
 }
 
-#if !BUILDFLAG(IS_QTWEBENGINE)
 void IOSurfaceImageBacking::ClearEGLDisplaysWithPendingCommands(
     gl::GLDisplayEGL* display_to_keep) {
+#if !BUILDFLAG(IS_QTWEBENGINE)
   AssertLockAcquired();
 
   if (std::move(egl_displays_pending_flush_).contains(display_to_keep)) {
     egl_displays_pending_flush_.insert(display_to_keep);
   }
-}
 #endif
+}
 
 #if BUILDFLAG(USE_DAWN)
 std::unique_ptr<DawnImageRepresentation> IOSurfaceImageBacking::ProduceDawn(
