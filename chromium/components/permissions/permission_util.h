@@ -64,6 +64,7 @@ class PermissionUtil {
   // Returns the permission string for the given permission.
   static std::string GetPermissionString(ContentSettingsType);
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Returns the request type uma value for the given permissions.
   static RequestTypeForUma GetUmaValueForRequests(
       const std::vector<std::unique_ptr<PermissionRequest>>& requests);
@@ -74,7 +75,6 @@ class PermissionUtil {
   // Returns the request type uma value for the given request type.
   static RequestTypeForUma GetUmaValueForRequestType(RequestType request_type);
 
-#if !BUILDFLAG(IS_QTWEBENGINE)
   // Returns the gesture type corresponding to whether a permission request is
   // made with or without a user gesture.
   static PermissionRequestGestureType GetGestureType(bool user_gesture);
@@ -156,6 +156,7 @@ class PermissionUtil {
   static ContentSetting PermissionStatusToContentSetting(
       blink::mojom::PermissionStatus status);
 
+#if !BUILDFLAG(IS_QTWEBENGINE)
   // Helper method to convert PermissionDecision to PermissionStatus.
   static content::PermissionStatus PermissionDecisionToPermissionStatus(
       PermissionDecision decision);
@@ -163,6 +164,7 @@ class PermissionUtil {
   // Helper method to convert PermissionDecision to ContentSetting.
   static ContentSetting PermissionDecisionToContentSetting(
       PermissionDecision decision);
+#endif
 
   // Helper methods to convert ContentSetting to PermissionStatus and vice
   // versa.
