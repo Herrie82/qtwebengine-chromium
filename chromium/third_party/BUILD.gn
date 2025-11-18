@@ -19,7 +19,7 @@ if (use_system_libjpeg) {
     packages = [ "libjpeg" ]
   }
   shim_headers("libjpeg_shim") {
-    root_path = "libjpeg_turbo"
+    root_path = "libjpeg_turbo/src"
     headers = [
       "jpeglib.h"
     ]
