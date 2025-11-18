@@ -1380,8 +1380,8 @@ void IOSurfaceImageBacking::WaitForCommandsToBeScheduled(
   AssertLockAcquired();
   TRACE_EVENT0("gpu", "IOSurfaceImageBacking::WaitForCommandsToBeScheduled");
 
-  std::vector<wgpu::Device> wgpu_devices_to_keep;
 #if BUILDFLAG(USE_DAWN)
+  std::vector<wgpu::Device> wgpu_devices_to_keep;
   for (const auto& device : wgpu_devices_pending_flush_) {
     // Only Metal backed devices are added to `wgpu_devices_pending_flush_`.
     id<MTLDevice> mtl_device = dawn::native::metal::GetMTLDevice(device.Get());
@@ -1393,8 +1393,8 @@ void IOSurfaceImageBacking::WaitForCommandsToBeScheduled(
                  "IOSurfaceImageBacking::WaitForCommandsToBeScheduled::Dawn");
     dawn::native::metal::WaitForCommandsToBeScheduled(device.Get());
   }
-#endif
   wgpu_devices_pending_flush_ = std::move(wgpu_devices_to_keep);
+#endif
 
   std::vector<gl::GLDisplayEGL*> egl_displays_to_keep;
   for (auto* display : egl_displays_pending_flush_) {

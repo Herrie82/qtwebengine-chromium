@@ -175,7 +175,9 @@ class GPU_GLES2_EXPORT D3DImageBacking final
            dxgi_shared_handle_state_->has_keyed_mutex();
   }
 
+#if BUILDFLAG(USE_DAWN)
   bool SupportsDeferredGraphiteSubmit() const;
+#endif
 
   // Holds a gles2::TexturePassthrough and corresponding egl image.
   class GLTextureHolder : public base::RefCounted<GLTextureHolder> {
@@ -317,6 +319,7 @@ class GPU_GLES2_EXPORT D3DImageBacking final
   void BeginDCompTextureAccess();
   void EndDCompTextureAccess();
 
+#if BUILDFLAG(USE_DAWN)
   void CheckForDawnDeviceLoss(const wgpu::Device& device,
                               const wgpu::SharedTextureMemory& texture_memory)
       EXCLUSIVE_LOCKS_REQUIRED(lock_);
@@ -340,6 +343,7 @@ class GPU_GLES2_EXPORT D3DImageBacking final
   void FlushGraphiteCommandsIfNeeded() EXCLUSIVE_LOCKS_REQUIRED(lock_);
 
   void InvalidatePersistentGraphiteDawnAccess() EXCLUSIVE_LOCKS_REQUIRED(lock_);
+#endif
 
   // Get a list of fences to wait on in BeginAccessD3D11/Dawn. If the waiting
   // device is backed by D3D11 (ANGLE or Dawn), |wait_d3d11_device| can be
@@ -485,6 +489,7 @@ class GPU_GLES2_EXPORT D3DImageBacking final
   std::optional<base::WaitableEventWatcher> pending_copy_event_watcher_
       GUARDED_BY(lock_);
 
+#if BUILDFLAG(USE_DAWN)
   // Persistent Graphite's Dawn's access. Calls Dawn's BeginAccess in ctor and
   // EndAccess in dtor. This is only used when the backing is not shared across
   // devices. Since no cross device synchronization is needed, it is also safe
@@ -493,6 +498,7 @@ class GPU_GLES2_EXPORT D3DImageBacking final
   scoped_refptr<PersistentGraphiteDawnAccess> persistent_graphite_dawn_access_;
 
   class GraphiteTextureHolder;
+#endif
 
   base::WeakPtrFactory<D3DImageBacking> weak_ptr_factory_{this};
 };
