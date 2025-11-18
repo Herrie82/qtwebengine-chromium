@@ -204,7 +204,7 @@ std::vector<GpuFeatureData> GetGpuFeatureData(
       "direct_rendering_display_compositor",
       SafeGetFeatureStatus(
           gpu_feature_info,
-          gpu::GPU_FEATURE_TYPE_DIRECT_RENDERING_DISPLAY_COMPOSITOR});
+          gpu::GPU_FEATURE_TYPE_DIRECT_RENDERING_DISPLAY_COMPOSITOR)});
   features.push_back({
       "webgpu",
       SafeGetFeatureStatus(
@@ -220,7 +220,7 @@ std::vector<GpuFeatureData> GetGpuFeatureData(
                            gpu::GPU_FEATURE_TYPE_SKIA_GRAPHITE)});
   features.push_back({
       "webnn",
-      SafeGetFeatureStatus(gpu_feature_info, gpu::GPU_FEATURE_TYPE_WEBNN));
+      SafeGetFeatureStatus(gpu_feature_info, gpu::GPU_FEATURE_TYPE_WEBNN)});
   features.push_back({"trees_in_viz",
                         base::FeatureList::IsEnabled(::features::kTreesInViz)
                             ? gpu::kGpuFeatureStatusEnabled
