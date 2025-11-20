@@ -507,7 +507,7 @@ TypeConverter<AuthenticatorSelectionCriteriaPtr,
   std::optional<ResidentKeyRequirement> resident_key;
   if (criteria.hasResidentKey()) {
     resident_key = mojo::TypeConverter<std::optional<ResidentKeyRequirement>,
-                                       String>::Convert(criteria.residentKey());
+                                       blink::String>::Convert(criteria.residentKey());
   }
   if (resident_key) {
     mojo_criteria->resident_key = *resident_key;
@@ -521,7 +521,7 @@ TypeConverter<AuthenticatorSelectionCriteriaPtr,
   if (criteria.hasUserVerification()) {
     std::optional<UserVerificationRequirement> user_verification =
         mojo::TypeConverter<std::optional<UserVerificationRequirement>,
-                            String>::Convert(criteria.userVerification());
+                            blink::String>::Convert(criteria.userVerification());
     if (user_verification) {
       mojo_criteria->user_verification = *user_verification;
     }
@@ -569,7 +569,7 @@ TypeConverter<PublicKeyCredentialDescriptorPtr,
     Convert(const blink::PublicKeyCredentialDescriptor& descriptor) {
   std::optional<PublicKeyCredentialType> type =
       mojo::TypeConverter<std::optional<PublicKeyCredentialType>,
-                          String>::Convert(descriptor.type());
+                          blink::String>::Convert(descriptor.type());
   if (!type) {
     return nullptr;
   }
@@ -580,7 +580,7 @@ TypeConverter<PublicKeyCredentialDescriptorPtr,
     for (const auto& transport : descriptor.transports()) {
       auto maybe_transport(
           mojo::TypeConverter<std::optional<AuthenticatorTransport>,
-                              String>::Convert(transport));
+                              blink::String>::Convert(transport));
       if (maybe_transport) {
         mojo_descriptor->transports.push_back(*maybe_transport);
       }
@@ -601,7 +601,7 @@ TypeConverter<PublicKeyCredentialParametersPtr,
     Convert(const blink::PublicKeyCredentialParameters& parameter) {
   std::optional<PublicKeyCredentialType> type =
       mojo::TypeConverter<std::optional<PublicKeyCredentialType>,
-                          String>::Convert(parameter.type());
+                          blink::String>::Convert(parameter.type());
   if (!type) {
     return nullptr;
   }
@@ -682,14 +682,14 @@ TypeConverter<PublicKeyCredentialCreationOptionsPtr,
   }
 
   mojo_options->hints =
-      mojo::TypeConverter<blink::Vector<Hint>, blink::Vector<String>>::Convert(
+      mojo::TypeConverter<blink::Vector<Hint>, blink::Vector<blink::String>>::Convert(
           options.hints());
 
   mojo_options->attestation = AttestationConveyancePreference::NONE;
   if (options.hasAttestation()) {
     std::optional<AttestationConveyancePreference> attestation =
         mojo::TypeConverter<std::optional<AttestationConveyancePreference>,
-                            String>::Convert(options.attestation());
+                            blink::String>::Convert(options.attestation());
     if (attestation) {
       mojo_options->attestation = *attestation;
     }
@@ -868,14 +868,14 @@ TypeConverter<PublicKeyCredentialRequestOptionsPtr,
   if (options.hasUserVerification()) {
     std::optional<UserVerificationRequirement> user_verification =
         mojo::TypeConverter<std::optional<UserVerificationRequirement>,
-                            String>::Convert(options.userVerification());
+                            blink::String>::Convert(options.userVerification());
     if (user_verification) {
       mojo_options->user_verification = *user_verification;
     }
   }
 
   mojo_options->hints =
-      mojo::TypeConverter<blink::Vector<Hint>, blink::Vector<String>>::Convert(
+      mojo::TypeConverter<blink::Vector<Hint>, blink::Vector<blink::String>>::Convert(
           options.hints());
 
   if (options.hasExtensions()) {
@@ -1108,7 +1108,7 @@ TypeConverter<std::optional<SupplementalPubKeysRequestPtr>,
   ret->provider_scope_requested = provider_scope_requested;
   ret->attestation =
       mojo::TypeConverter<std::optional<AttestationConveyancePreference>,
-                          String>::Convert(supplemental_pub_keys.attestation())
+                          blink::String>::Convert(supplemental_pub_keys.attestation())
           .value_or(AttestationConveyancePreference::NONE);
   ret->attestation_formats = supplemental_pub_keys.attestationFormats();
   return ret;
