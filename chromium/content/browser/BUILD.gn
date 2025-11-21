@@ -3557,6 +3557,9 @@ jumbo_source_set("browser") {
       "webid/digital_credentials/cross_device_transaction_impl.cc",
       "webid/digital_credentials/cross_device_transaction_impl.h",
     ]
+    jumbo_excluded_sources += [
+      "devtools/protocol/webauthn_handler.cc",
+    ]
 
     if (!is_fuchsia && !is_qtwebengine) {
       sources += [

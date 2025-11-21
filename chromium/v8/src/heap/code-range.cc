@@ -212,14 +212,14 @@ bool CodeRange::InitReservation(v8::PageAllocator* page_allocator,
     // the BoundedPageAllocator. Use it if it's big enough.
     const Address non_allocatable_size = page_allocator_->begin() - base();
 
-    TRACE("=== non-allocatable region: [%p, %p)\n",
+    TRACE_CR("=== non-allocatable region: [%p, %p)\n",
           reinterpret_cast<void*>(base()),
           reinterpret_cast<void*>(base() + non_allocatable_size));
 
     // Exclude the first page from allocatable pages if the required writable
     // area doesn't fit into the non-allocatable area.
     if (non_allocatable_size < required_writable_area_size) {
-      TRACE("=== Exclude the first page from allocatable area\n");
+      TRACE_CR("=== Exclude the first page from allocatable area\n");
       excluded_allocatable_area_size = kPageSize;
       CHECK(page_allocator_->AllocatePagesAt(page_allocator_->begin(),
                                              excluded_allocatable_area_size,

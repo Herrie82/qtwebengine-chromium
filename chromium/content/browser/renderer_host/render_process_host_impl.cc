@@ -688,7 +688,7 @@ bool IsEmptyRendererProcessesReuseAllowed() {
     return false;
   }
   return base::FeatureList::IsEnabled(
-      features::kTrackEmptyRendererProcessesForReuse);
+      ::features::kTrackEmptyRendererProcessesForReuse);
 }
 
 class SiteProcessCountTracker : public base::SupportsUserData::Data,

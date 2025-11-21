@@ -2000,11 +2000,11 @@ ConstraintSpace GridLayoutAlgorithm::CreateConstraintSpaceForMeasure(
 
 namespace {
 
-class GapAccumulator {
+class GapGridAccumulator {
   STACK_ALLOCATED();
 
  public:
-  GapAccumulator() = default;
+  GapGridAccumulator() = default;
 
   void BuildGapIntersectionPoints(const GridLayoutData& layout_data) {
     const Vector<LayoutUnit> col_tracks =
@@ -2191,11 +2191,11 @@ void GridLayoutAlgorithm::PlaceGridItems(
       container_space.GetWritingDirection();
   auto next_subgrid_subtree = layout_subtree.FirstChild();
 
-  std::optional<GapAccumulator> gap_accumulator;
+  std::optional<GapGridAccumulator> gap_accumulator;
 
   if (RuntimeEnabledFeatures::CSSGapDecorationEnabled() &&
       Style().HasGapRule()) {
-    gap_accumulator = GapAccumulator();
+    gap_accumulator = GapGridAccumulator();
     gap_accumulator->BuildGapIntersectionPoints(layout_data);
   }
 
