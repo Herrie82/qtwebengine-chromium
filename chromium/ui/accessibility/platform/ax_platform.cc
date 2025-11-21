@@ -213,7 +213,7 @@ void AXPlatform::DetachFromThreadForTesting() {
   DETACH_FROM_THREAD(thread_checker_);
 }
 
-#if BUILDFLAG(IS_WIN)
+#if BUILDFLAG(IS_WIN) && !BUILDFLAG(IS_QTWEBENGINE)
 void AXPlatform::RetrieveProductStringsIfNeeded() const {
   if (!product_strings_) {
     product_strings_ = delegate_->GetProductStrings();
