@@ -5,7 +5,7 @@
 import("//build/config/ui.gni")
 import("//testing/test.gni")
 
-jumbo_component("native_theme") {
+component("native_theme") {
   sources = [
     "caption_style.cc",
     "caption_style.h",
