@@ -20,18 +20,21 @@ export class ExtensionsInfoList extends PolymerElement {
   static get properties() {
     return {
       extensionsInfo: {
-        type: Array,  // Correctly define the type as Array
+        type: Array,
+        value: () => [],
       },
+
       isLoading: {
-        type: Boolean,  // Correctly define the type as Boolean
-      }
+        type: Boolean,
+        value: () => false,
+      },
     };
   }
 
   private extensionUiBrowserProxy: ExtensionsUIBrowserProxy =
       ExtensionsUIBrowserProxy.getInstance();
-  private extensionsInfo: ExtensionInfo[] = [];
-  private isLoading: boolean = false;
+  declare private extensionsInfo: ExtensionInfo[];
+  declare private isLoading: boolean;
 
   override connectedCallback(): void {
     super.connectedCallback();
