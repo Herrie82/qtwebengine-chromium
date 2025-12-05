@@ -97,13 +97,12 @@ export class ExtensionsInfoList extends PolymerElement {
     const id = (event.currentTarget as HTMLElement).dataset['id']!;
     const enabled = (event.currentTarget as HTMLElement).dataset['enabled']!;
     const isEnabled = (enabled == 'Enabled');
-    this.extensionUiBrowserProxy.handler.setExtensionEnabled(id, !isEnabled)
-        .then(() => {
-          window.location.reload();
-        })
-        .catch(error => {
-          console.error('Failed to change extension state:', error);
-        });
+    try {
+      await this.extensionUiBrowserProxy.handler.setExtensionEnabled(id, !isEnabled);
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to change extension state:', error);
+    }
   }
 }
 
