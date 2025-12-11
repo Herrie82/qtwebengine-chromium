@@ -3352,7 +3352,6 @@ bool FastJsonStringifier<Char>::AppendStringScalar(
   return needs_escaping;
 }
 
-#ifndef SkipSIMD
 template <typename Char>
 template <typename SrcChar>
   requires(sizeof(SrcChar) == sizeof(uint8_t))
@@ -3370,6 +3369,7 @@ bool FastJsonStringifier<Char>::AppendStringSWAR(
   return AppendStringScalar(chars, length, i, uncopied_src_index, no_gc);
 }
 
+#ifndef SkipSIMD
 template <typename Char>
 template <typename SrcChar>
   requires(sizeof(SrcChar) == sizeof(uint8_t))
