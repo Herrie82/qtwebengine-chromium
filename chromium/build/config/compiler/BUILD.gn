@@ -404,9 +404,9 @@ config("compiler") {
   # optimizations. This flag must be consistently set for both module
   # precompilation and normal source compilation, which means it's enabled for
   # some targets even in debug builds.
-  if (is_win && is_clang) {
+  if (is_win && is_clang && !is_mingw) {
     cflags += [ "/clang:-fno-math-errno" ]
-  } else if (!is_win) {
+  } else if (!is_win || is_mingw) {
     cflags += [ "-fno-math-errno" ]
   }
 
@@ -676,7 +676,7 @@ config("compiler") {
     cflags += [ "-fmerge-all-constants" ]
 
     if (!use_sized_deallocation) {
-      if (is_win) {
+      if (is_win && !is_mingw) {
         cflags += [ "/Zc:sizedDealloc-" ]
       } else {
         cflags += [ "-fno-sized-deallocation" ]
@@ -3091,7 +3091,7 @@ config("optimize_size_only") {
 # elsewhere.
 config("optimize_max") {
   ldflags = common_optimize_on_ldflags
-  if (is_win) {
+  if (is_win && !is_mingw) {
     # Favor speed over size, /O2 must be before the common flags.
     # /O2 implies /Ot, /Oi, and /GF.
     cflags = [ "/O2" ] + common_optimize_on_cflags
@@ -3112,11 +3112,11 @@ config("optimize_max") {
 # so that we don't need this disclaimer.
 config("optimize_speed") {
   ldflags = common_optimize_on_ldflags
-  if (is_win) {
+  if (is_win && !is_mingw) {
     # Favor speed over size, /O2 must be before the common flags.
     # /O2 implies /Ot, /Oi, and /GF.
     cflags = [ "/O2" ] + common_optimize_on_cflags
-    if (is_clang && !is_mingw) {
+    if (is_clang) {
       cflags += [ "/clang:-O3" ]
     }
   } else if (optimize_for_fuzzing) {

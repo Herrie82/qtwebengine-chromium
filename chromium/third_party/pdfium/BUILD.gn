@@ -167,7 +167,7 @@ config("pdfium_core_config") {
     "//build/config/compiler:noshadowing",
   ]
   defines = []
-  if (is_win && !is_clang && !is_gcc) {
+  if (is_win && !is_clang && !is_gcc && !is_mingw) {
     cflags += [
       "/wd4324",
       "/wd4577",
