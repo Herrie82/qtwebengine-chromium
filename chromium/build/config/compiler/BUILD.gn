@@ -3086,6 +3086,7 @@ config("no_optimize") {
 }
 
 config("optimize_size_only") {
+  ldflags = common_optimize_on_ldflags
   if (is_win && !is_mingw) {
     cflags = [ "/O1" ]
   } else {
