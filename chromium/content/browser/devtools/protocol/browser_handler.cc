@@ -611,6 +611,17 @@ Response BrowserHandler::CrashGpuProcess() {
 }
 
 Response BrowserHandler::Close() {
+  bool closed = false;
+  for (WebContentsImpl* web_contents : WebContentsImpl::GetAllWebContents()) {
+    if (WebContentsDelegate* delegate = web_contents->GetDelegate()) {
+      delegate->CloseContents(web_contents);
+      closed = true;
+    }
+  }
+
+  if (!closed)
+    return Response::InternalError();
+
   return Response::Success();
 }
 
