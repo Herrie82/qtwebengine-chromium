@@ -16,6 +16,7 @@ if (use_system_harfbuzz) {
     visibility = [
       "//third_party/freetype",
       "//third_party/harfbuzz-ng",
+      "//third_party:freetype_harfbuzz",
     ]
     packages = [
       "harfbuzz",
