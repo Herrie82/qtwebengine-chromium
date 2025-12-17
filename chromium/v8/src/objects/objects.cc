@@ -5244,6 +5244,7 @@ HandleType<Derived> BaseNameDictionary<Derived, Shape>::Add(
 template <typename Derived, typename Shape>
 template <typename IsolateT, template <typename> typename HandleType,
           AllocationType key_allocation, typename>
+  // requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
 HandleType<Derived> Dictionary<Derived, Shape>::Add(
     IsolateT* isolate, HandleType<Derived> dictionary, Key key,
     DirectHandle<Object> value, PropertyDetails details,
@@ -5271,6 +5272,7 @@ HandleType<Derived> Dictionary<Derived, Shape>::Add(
 template <typename Derived, typename Shape>
 template <typename IsolateT, template <typename> typename HandleType,
           AllocationType key_allocation, typename>
+  // requires(std::is_convertible_v<HandleType<Derived>, DirectHandle<Derived>>)
 void Dictionary<Derived, Shape>::UncheckedAdd(IsolateT* isolate,
                                               HandleType<Derived> dictionary,
                                               Key key,

@@ -395,9 +395,9 @@ bool ShowPredictions(const WebDocument& document,
 // TODO(crbug.com/402071086): Remove when AutofillIgnoreCheckableElements is
 // removed.
 bool IsCheckableElement(const WebFormControlElement& element) {
-  using enum blink::mojom::FormControlType;
-  return element && (element.FormControlTypeForAutofill() == kInputCheckbox ||
-                     element.FormControlTypeForAutofill() == kInputRadio);
+  using blink::mojom::FormControlType;
+  return element && (element.FormControlTypeForAutofill() == FormControlType::kInputCheckbox ||
+                     element.FormControlTypeForAutofill() == FormControlType::kInputRadio);
 }
 
 gfx::Rect GetCaretBounds(content::RenderFrame& frame) {

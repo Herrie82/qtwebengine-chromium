@@ -147,9 +147,9 @@ using ::webrtc::InitDiagnosticLoggingDelegateFunction;
 using ::webrtc::LogMessage;
 using ::webrtc::LogMessageVoidify;
 using ::webrtc::LogErrorContext;
-using enum ::webrtc::LogErrorContext;
+// using enum ::webrtc::LogErrorContext;
 using ::webrtc::LoggingSeverity;
-using enum ::webrtc::LoggingSeverity;
+// using enum ::webrtc::LoggingSeverity;
 using ::webrtc::SetExtraLoggingInit;
 }  // namespace rtc
 
