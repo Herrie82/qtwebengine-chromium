@@ -82,7 +82,7 @@ minify_js("minify_bidimapper") {
 
   if (is_win) {
     # This is workaround for Windows build. Terser converts \x1a to ^Z and
-    # it causes "unexpected end-of-file" error. The "-f ascii_only" terser
+    # it causes "unexpected end-of-file" error. The "ascii_only" terser
     # option prevents the conversion.
     ascii_only = true
   }
@@ -548,7 +548,7 @@ python_library("chromedriver_py_tests") {
     data_deps += [ "//chrome:chrome_framework" ]
   }
 
-  if (is_win) {
+  if (is_win && !is_qtwebengine) {
     # On Windows, the following target produces the final chrome.exe
     data_deps += [ "//chrome:reorder_imports" ]
   }

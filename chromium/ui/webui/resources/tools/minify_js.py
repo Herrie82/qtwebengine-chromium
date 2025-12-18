@@ -38,7 +38,7 @@ def main(argv):
     '--out_folder', out_path
   ] + args.in_files
   if args.ascii_only:
-    node_args += ['-f', 'ascii_only']
+    node_args += ['--ascii_only']
   node.RunNode(node_args)
 
   manifest_data = {}
