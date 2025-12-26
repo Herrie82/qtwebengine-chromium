@@ -100,7 +100,7 @@ assert outputHTmp != None
 outputHFile = open(outputHTmp)
 outputHContents = outputHFile.read()
 outputHFile.close()
-os.unlink(outputHTmp)
+#os.unlink(outputHTmp)
 
 # Rewrite the generated header with #include guards.
 outputH = os.path.join(outputDir, inputRoot + '.h')
